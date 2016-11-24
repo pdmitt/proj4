@@ -2,14 +2,11 @@
 
 #required 
 import pygame
-pygame.init();
+pygame.init(); #pygame library initializes itself
 
 #create colors
-white = (255,255,255)
 black = (0,0,0)
 red = (255, 0, 0)
-green = (0, 255, 0)
-blue = (0, 0, 255)
 
 #position vars
 x_pos = 0
@@ -19,18 +16,15 @@ y_delta = 0
 clock = pygame.time.Clock() #create an object to help track time
 
 #create a surface
-gameDisplay = pygame.display.set_mode((800,600)) #initialize with a tuple
+screen = pygame.display.set_mode((600,600)) #width, height creates a surface
 
 #lets add a title, aka "caption"
-pygame.display.set_caption("James Bond 007")
+pygame.display.set_caption("James Bond 007") #title
 pygame.display.update()		#only updates portion specified
-
-
-
 
 gameExit = False
 while not gameExit:
-	gameDisplay.fill(white)
+	screen.fill(black)
 
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
@@ -50,10 +44,15 @@ while not gameExit:
 	
 	x_pos +=x_delta
 	y_pos +=y_delta
-	gameDisplay.fill(red, rect=[x_pos,y_pos, 20,20])
+	screen.fill(red, rect=[x_pos,y_pos, 20,20])
 	pygame.display.update()		
 	clock.tick(30)
 
+class bad(Sprite):
+	def __init__(self):
+		Sprite.__init__(self)
+		self.image = Surface(20, 20) #image or shape to draw for this sprite- a surface
+		self.rect = Rect(0,0, 40, 50)
 
 
 #required
