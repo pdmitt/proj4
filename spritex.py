@@ -1,5 +1,6 @@
 import pygame
 import random
+import os #commands to set up folder for graphics
 
 width = 800
 height = 600
@@ -11,13 +12,27 @@ red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
 
+game_folder = os.path.dirname(__file__)
+img_folder = os.path.join(game_folder, "img")
+
 class Player(pygame.sprite.Sprite): #built-in basic Sprite set up
     def __init__(self): #will run whenever we create the player object
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((50, 50)) #needed to know what the sprite looks like
-        self.image.fill(green)
+        self.image = pygame.image.load(os.path.join(img_folder, "p1_jump.png")).convert()
+        self.image.set_colorkey(black) #makes background of graphic transparent
         self.rect = self.image.get_rect() #needed rectangle to enclose sprite
-        self.rect.center = (width / 2, height / 2) #putting sprite in the center
+        self.rect.center = (width/2, height/2) #putting sprite in the center
+        self.y_speed = 5
+
+    def update(self):
+        self.rect.x += 5
+        self.rect.y += self.y_speed
+        if self.rect.bottom > height - 200:
+            self.y_speed = -5
+        if self.rect.top < 200:
+            self.y_speed = 5
+        if self.rect.left > width:
+            self.rect.right = 0 #if sprite goes off the screen it will come back on
 
 
 pygame.init()
