@@ -30,7 +30,17 @@ class JamesBond(pygame.sprite.Sprite): #built-in basic Sprite set up
         self.speedx = 0
 
     def update(self):
+        self.speedx = 0
+        keystate = pygame.key.get_pressed()
+        if keystate[pygame.K_LEFT]:
+            self.speedx = -5
+        if keystate[pygame.K_RIGHT]:
+            self.speedx = 5
         self.rect.x += self.speedx
+        if self.rect.right > width: #creating a wall so that our right coord. does not get bigger than width
+            self.rect.right = width
+        if self.rect.left < 0: #coordinate-based screen
+            self.rect.left = 0 #constraining player movement to screen
 
 all_sprites = pygame.sprite.Group()
 player = JamesBond()
