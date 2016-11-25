@@ -11,6 +11,7 @@ black = (0,0,0)
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
+pink =  (255, 192, 203)
 
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
@@ -22,15 +23,15 @@ class Player(pygame.sprite.Sprite): #built-in basic Sprite set up
         self.image.set_colorkey(black) #makes background of graphic transparent
         self.rect = self.image.get_rect() #needed rectangle to enclose sprite
         self.rect.center = (width/2, height/2) #putting sprite in the center
-        self.y_speed = 5
+        self.y_speed = 5 
 
     def update(self):
         self.rect.x += 5
-        self.rect.y += self.y_speed
-        if self.rect.bottom > height - 200:
-            self.y_speed = -5
-        if self.rect.top < 200:
-            self.y_speed = 5
+        # self.rect.y += self.y_speed #makes the sprite move up and down
+        # if self.rect.bottom > height - 200: #don't want sprite going off the screen so we reverse directions
+        #     self.y_speed = -5
+        # if self.rect.top < 200: #same as above
+        #     self.y_speed = 5
         if self.rect.left > width:
             self.rect.right = 0 #if sprite goes off the screen it will come back on
 
@@ -59,7 +60,7 @@ while running:
     all_sprites.update()
 
     #draw/render
-    screen.fill(black)
+    screen.fill(pink)
     all_sprites.draw(screen)
     pygame.display.flip() #comes after drawing everything
 
