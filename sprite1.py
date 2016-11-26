@@ -109,6 +109,13 @@ while running:
     #handle updates
     all_sprites.update()
 
+    #check to see if bullet hits a mob
+    hits = pygame.sprite.groupcollide(mobs,bullets, True, True) #if a bullet hits a mob, both will be deleted
+    for hit in hits:
+        m = Mob() #create new mob
+        all_sprites.add(m)
+        mobs.add(m) #always have 8 mobs because they will be created at the rate they are deleted
+
     #check to see if a mob hit the player
     hits = pygame.sprite.spritecollide(player, mobs, False) #returns list of any mobs which hit player
     if hits:
