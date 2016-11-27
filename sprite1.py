@@ -1,6 +1,8 @@
 import pygame
 import random
-import os #commands to set up folder for graphics
+from os import path #commands to set up folder for graphics
+
+img_dir = path.join(path.dirname(__file__), "img")
 
 width = 500
 height = 600
@@ -23,8 +25,8 @@ clock = pygame.time.Clock()
 class JamesBond(pygame.sprite.Sprite): #built-in basic Sprite set up
     def __init__(self): #will run whenever we create the player object
         pygame.sprite.Sprite.__init__(self) #needed for sprite to work
-        self.image = pygame.Surface((50, 40))
-        self.image.fill(green)
+        self.image = pygame.transform.scale(player_img, (50, 38)) #resizing image
+        self.image.set_colorkey(black) #removing outline of graphic
         self.rect = self.image.get_rect()
         self.rect.centerx = width/2
         self.rect.bottom = height-10 #10 pixels from bottom of screen
@@ -51,8 +53,8 @@ class JamesBond(pygame.sprite.Sprite): #built-in basic Sprite set up
 class Mob(pygame.sprite.Sprite): #don't know graphics yet
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((30,40))
-        self.image.fill(red)
+        self.image = meteor_img
+        self.image.set_colorkey(black)
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(0, width - self.rect.width) #will alwas appear between left and right
         self.rect.y = random.randrange(-100, -40)
@@ -69,8 +71,8 @@ class Mob(pygame.sprite.Sprite): #don't know graphics yet
 class Bullet(pygame.sprite.Sprite): #bullet is inheritting from the general class sprite
     def __init__(self, x, y): #x and y so we know player location
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10,20))
-        self.image.fill(yellow)
+        self.image = bullet_img
+        self.image.set_colorkey(black)
         self.rect = self.image.get_rect()
         self.rect.bottom = y
         self.rect.centerx = x
@@ -78,11 +80,15 @@ class Bullet(pygame.sprite.Sprite): #bullet is inheritting from the general clas
 
     def update(self):
         self.rect.y += self.speedy
-        if self.rect.bottom < 0:
-            self.kill() #removes any sprite from any group it is in if it goes off the screen
+        if self.rect.bottom < 0: #if it goes off the screen
+            self.kill() #removes any sprite from any group
 
-            #7:22 of Part 3
-
+#loading all game graphics
+background = pygame.image.load(path.join(img_dir, "background.bmp")).convert()
+background_rect = background.get_rect()
+player_img = pygame.image.load(path.join(img_dir, "p1_jump.png")).convert()
+meteor_img = pygame.image.load(path.join(img_dir, "p2_hurt.png")).convert()
+bullet_img = pygame.image.load(path.join(img_dir, "laserBlue16.png")).convert()
 
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
@@ -103,8 +109,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False #game loop ends
         elif event.type == pygame.KEYDOWN: #bullet will shoot when a key is pressed
-            if event.key == pygame.K_SPACE:
-                player.shoot()
+            if event.key == pygame.K_SPACE: #if the key was the space bar
+                player.shoot() #function shoot is defined on line 46
 
     #handle updates
     all_sprites.update()
@@ -123,6 +129,7 @@ while running:
 
     #draw/render
     screen.fill(pink)
+    screen.blit(background, background_rect) #copy pixels from one screen to another
     all_sprites.draw(screen)
     pygame.display.flip() #comes after drawing everything
 
