@@ -4,7 +4,7 @@ from os import path #commands to set up folder for graphics
 
 img_dir = path.join(path.dirname(__file__), "img")
 
-width = 500
+width = 600
 height = 600
 FPS = 60 #frames per second
 
@@ -19,15 +19,17 @@ yellow = (255, 255, 0)
 pygame.init()
 pygame.mixer.init() #handles sound effects and music
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Base Shapes")
+pygame.display.set_caption("Hot Dog Challenge")
 clock = pygame.time.Clock()
 
-class JamesBond(pygame.sprite.Sprite): #built-in basic Sprite set up
+class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
     def __init__(self): #will run whenever we create the player object
         pygame.sprite.Sprite.__init__(self) #needed for sprite to work
-        self.image = pygame.transform.scale(player_img, (50, 38)) #resizing image
-        self.image.set_colorkey(black) #removing outline of graphic
+        self.image = pygame.transform.scale(player_img, (32, 85)) #resizing image
+        self.image.set_colorkey(white) #removing outline of graphic
         self.rect = self.image.get_rect()
+        #self.radius = 20
+        #pygame.draw.circle(self.image, red, self.rect.center, self.radius)
         self.rect.centerx = width/2
         self.rect.bottom = height-10 #10 pixels from bottom of screen
         self.speedx = 0
@@ -53,9 +55,11 @@ class JamesBond(pygame.sprite.Sprite): #built-in basic Sprite set up
 class Mob(pygame.sprite.Sprite): #don't know graphics yet
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = meteor_img
+        self.image = pygame.transform.scale(meteor_img, (59, 33))
         self.image.set_colorkey(black)
         self.rect = self.image.get_rect()
+        #self.radius = int(self.rect.width/2)
+        #pygame.draw.circle(self.image, red, self.rect.center, self.radius)
         self.rect.x = random.randrange(0, width - self.rect.width) #will alwas appear between left and right
         self.rect.y = random.randrange(-100, -40)
         self.speedy = random.randrange(1, 8)
@@ -86,14 +90,14 @@ class Bullet(pygame.sprite.Sprite): #bullet is inheritting from the general clas
 #loading all game graphics
 background = pygame.image.load(path.join(img_dir, "background.bmp")).convert()
 background_rect = background.get_rect()
-player_img = pygame.image.load(path.join(img_dir, "p1_jump.png")).convert()
-meteor_img = pygame.image.load(path.join(img_dir, "p2_hurt.png")).convert()
+player_img = pygame.image.load(path.join(img_dir, "mustard.bmp")).convert()
+meteor_img = pygame.image.load(path.join(img_dir, "hot4.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "laserBlue16.png")).convert()
 
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
-player = JamesBond()
+player = Player1()
 all_sprites.add(player) #add any sprite we create so it gets animated and drawn
 for i in range(8):
     m = Mob()
