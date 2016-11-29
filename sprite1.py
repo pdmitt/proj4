@@ -22,6 +22,14 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Shoot the Fruit")
 clock = pygame.time.Clock()
 
+font_name = pygame.font.match_font('arial')
+def draw_text(surf, text, size, x, y):
+    font = pygame.font.Font(font_name, size) #created font object
+    text_on = font.render(text, True, white) #surface for writing for pixels, True is set so we can use an anti-aliased font which is cleaner (adds grey pixels)
+    text_rect = text_on.get_rect() #surface for rect
+    text_rect.midtop = (x, y)
+    surf.blit(text_on, text_rect) #blit surfac on location of rect
+
 class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
     def __init__(self): #will run whenever we create the player object
         pygame.sprite.Sprite.__init__(self) #needed for sprite to work
@@ -110,6 +118,8 @@ for i in range(8):
     all_sprites.add(m)
     mobs.add(m)
 
+score = 0
+
 #game loop
 running = True
 while running:
@@ -128,6 +138,7 @@ while running:
     #check to see if bullet hits a mob
     hits = pygame.sprite.groupcollide(mobs,bullets, True, True) #if a bullet hits a mob, both will be deleted
     for hit in hits:
+        score = score + 10 #adding points to score
         m = Fruit() #create new mob
         all_sprites.add(m)
         mobs.add(m) #always have 8 mobs because they will be created at the rate they are deleted
@@ -141,6 +152,7 @@ while running:
     screen.fill(deeppink)
     #screen.blit(background, background_rect) #copy pixels from one screen to another
     all_sprites.draw(screen)
+    draw_text(screen, str(score), 18, width/2, 10) #fruits behind score. denoting where we want it drawn, str score, font size, centered horizontally, pixels down for "y"
     pygame.display.flip() #comes after drawing everything
 
 pygame.quit()
