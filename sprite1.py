@@ -52,11 +52,11 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
         all_sprites.add(bullet) #add to group
         bullets.add(bullet)
 
-class Mob(pygame.sprite.Sprite): #don't know graphics yet
+class Fruit(pygame.sprite.Sprite): #don't know graphics yet
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         #self.image = pygame.transform.scale(mob1_img, (59, 33))
-        self.image = mob1_img
+        self.image = random.choice(fruit_images) #randomly chooses between apples and bananas
         self.image.set_colorkey(white)
         self.rect = self.image.get_rect()
         self.radius = int(self.rect.width*.9/2)
@@ -92,8 +92,13 @@ class Bullet(pygame.sprite.Sprite): #bullet is inheritting from the general clas
 #background = pygame.image.load(path.join(img_dir, "background.bmp")).convert()
 #background_rect = background.get_rect()
 player_img = pygame.image.load(path.join(img_dir, "monkey.png")).convert()
-mob1_img = pygame.image.load(path.join(img_dir, "banana.png")).convert()
+#mob1_img = pygame.image.load(path.join(img_dir, "banana.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "laserBlue16.png")).convert()
+fruit_images = []
+fruit_ls = ["banana.png", "apple.png"]
+
+for i in fruit_ls: #loops through list of files
+    fruit_images.append(pygame.image.load(path.join(img_dir, i)).convert()) #loads images
 
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
@@ -101,7 +106,7 @@ bullets = pygame.sprite.Group()
 player = Player1()
 all_sprites.add(player) #add any sprite we create so it gets animated and drawn
 for i in range(8):
-    m = Mob()
+    m = Fruit()
     all_sprites.add(m)
     mobs.add(m)
 
@@ -123,7 +128,7 @@ while running:
     #check to see if bullet hits a mob
     hits = pygame.sprite.groupcollide(mobs,bullets, True, True) #if a bullet hits a mob, both will be deleted
     for hit in hits:
-        m = Mob() #create new mob
+        m = Fruit() #create new mob
         all_sprites.add(m)
         mobs.add(m) #always have 8 mobs because they will be created at the rate they are deleted
 
