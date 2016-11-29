@@ -29,7 +29,7 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
         self.image.set_colorkey(white) #removing outline of graphic
         self.rect = self.image.get_rect()
         self.radius = 30 #making collisions more accurate (smaller than half of pixel diameter)
-        pygame.draw.circle(self.image, green, self.rect.center, self.radius)
+        #pygame.draw.circle(self.image, green, self.rect.center, self.radius)
         self.rect.centerx = width/2
         self.rect.bottom = height-10 #10 pixels from bottom of screen
         self.speedx = 0
@@ -60,7 +60,7 @@ class Mob(pygame.sprite.Sprite): #don't know graphics yet
         self.image.set_colorkey(white)
         self.rect = self.image.get_rect()
         self.radius = int(self.rect.width*.9/2)
-        pygame.draw.circle(self.image, green, self.rect.center, self.radius)
+        #pygame.draw.circle(self.image, green, self.rect.center, self.radius)
         self.rect.x = random.randrange(0, width - self.rect.width) #will alwas appear between left and right
         self.rect.y = random.randrange(-100, -40)
         self.speedy = random.randrange(1, 8)
