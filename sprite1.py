@@ -13,20 +13,20 @@ black = (0,0,0)
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
-pink =  (255, 192, 203)
+deeppink =  (255, 20, 147)
 yellow = (255, 255, 0)
 
 pygame.init()
 pygame.mixer.init() #handles sound effects and music
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Hot Dog Challenge")
+pygame.display.set_caption("Shoot the Fruit")
 clock = pygame.time.Clock()
 
 class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
     def __init__(self): #will run whenever we create the player object
         pygame.sprite.Sprite.__init__(self) #needed for sprite to work
-        self.image = pygame.transform.scale(player_img, (32, 85)) #resizing image
-        self.image.set_colorkey(white) #removing outline of graphic
+        self.image = player_img
+        self.image.set_colorkey(black) #removing outline of graphic
         self.rect = self.image.get_rect()
         #self.radius = 20
         #pygame.draw.circle(self.image, red, self.rect.center, self.radius)
@@ -55,8 +55,9 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
 class Mob(pygame.sprite.Sprite): #don't know graphics yet
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.transform.scale(meteor_img, (59, 33))
-        self.image.set_colorkey(black)
+        #self.image = pygame.transform.scale(mob1_img, (59, 33))
+        self.image = mob1_img
+        self.image.set_colorkey(white)
         self.rect = self.image.get_rect()
         #self.radius = int(self.rect.width/2)
         #pygame.draw.circle(self.image, red, self.rect.center, self.radius)
@@ -85,13 +86,13 @@ class Bullet(pygame.sprite.Sprite): #bullet is inheritting from the general clas
     def update(self):
         self.rect.y += self.speedy
         if self.rect.bottom < 0: #if it goes off the screen
-            self.kill() #removes any sprite from any group
+            self.kill() #method? #removes any sprite from any group
 
 #loading all game graphics
-background = pygame.image.load(path.join(img_dir, "background.bmp")).convert()
-background_rect = background.get_rect()
-player_img = pygame.image.load(path.join(img_dir, "mustard.bmp")).convert()
-meteor_img = pygame.image.load(path.join(img_dir, "hot4.png")).convert()
+#background = pygame.image.load(path.join(img_dir, "background.bmp")).convert()
+#background_rect = background.get_rect()
+player_img = pygame.image.load(path.join(img_dir, "monkey.png")).convert()
+mob1_img = pygame.image.load(path.join(img_dir, "banana.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "laserBlue16.png")).convert()
 
 all_sprites = pygame.sprite.Group()
@@ -132,8 +133,8 @@ while running:
         running = False
 
     #draw/render
-    screen.fill(pink)
-    screen.blit(background, background_rect) #copy pixels from one screen to another
+    screen.fill(deeppink)
+    #screen.blit(background, background_rect) #copy pixels from one screen to another
     all_sprites.draw(screen)
     pygame.display.flip() #comes after drawing everything
 
