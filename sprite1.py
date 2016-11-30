@@ -65,6 +65,7 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
         all_sprites.add(bullet) #add to group
         bullets.add(bullet)
         shooting_sound.play() #adding sound to shoot
+        shooting_sound.set_volume(.7) #adjusting sound to play at 70% full volume
 
 class Fruit(pygame.sprite.Sprite): #don't know graphics yet
     def __init__(self):
@@ -116,8 +117,10 @@ for i in fruit_ls: #loops through list of files
     fruit_images.append(pygame.image.load(path.join(img_dir, i)).convert()) #loads images
 
 #loading game sounds
-shooting_sound = pygame.mixer.Sound(path.join(sound_dir, "Laser_Shoot9.wav"))
-shot_target = pygame.mixer.Sound(path.join(sound_dir, "Powerup10.wav"))
+shooting_sound = pygame.mixer.Sound(path.join(sound_dir, "Laser_Shoot9.wav")) #smaller sound effect.
+shot_target = pygame.mixer.Sound(path.join(sound_dir, "Powerup10.wav")) #smaller sound effect
+pygame.mixer.music.load(path.join(sound_dir, "copycat(revised).wav")) #adding continuous background music
+pygame.mixer.music.set_volume(.9)
 
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
@@ -130,6 +133,7 @@ for i in range(8):
     mobs.add(m)
 
 score = 0
+pygame.mixer.music.play(loops=-1) #adding music to the game and plays infinitely
 
 #game loop
 running = True
@@ -151,6 +155,7 @@ while running:
     for hit in hits:
         score = score + 10 #adding points to score
         shot_target.play() #sound added when laser hits fruit target
+        shot_target.set_volume(.7) #adjusting collision sound
         m = Fruit() #create new mob
         all_sprites.add(m)
         mobs.add(m) #always have 8 mobs because they will be created at the rate they are deleted
