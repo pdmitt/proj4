@@ -64,7 +64,7 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
         bullet = Bullet(self.rect.centerx, self.rect.top) #bottom of bullet at top of the player
         all_sprites.add(bullet) #add to group
         bullets.add(bullet)
-        shooting_sound.play()
+        shooting_sound.play() #adding sound to shoot
 
 class Fruit(pygame.sprite.Sprite): #don't know graphics yet
     def __init__(self):
@@ -116,7 +116,8 @@ for i in fruit_ls: #loops through list of files
     fruit_images.append(pygame.image.load(path.join(img_dir, i)).convert()) #loads images
 
 #loading game sounds
-shooting_sound = pygame.mixer.Sound(path.join(sound_dir, "LaserShoot_9"))
+shooting_sound = pygame.mixer.Sound(path.join(sound_dir, "Laser_Shoot9.wav"))
+shot_target = pygame.mixer.Sound(path.join(sound_dir, "Powerup10.wav"))
 
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
@@ -149,6 +150,7 @@ while running:
     hits = pygame.sprite.groupcollide(mobs,bullets, True, True) #if a bullet hits a mob, both will be deleted
     for hit in hits:
         score = score + 10 #adding points to score
+        shot_target.play() #sound added when laser hits fruit target
         m = Fruit() #create new mob
         all_sprites.add(m)
         mobs.add(m) #always have 8 mobs because they will be created at the rate they are deleted
