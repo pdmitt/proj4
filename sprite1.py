@@ -7,6 +7,7 @@ import random
 from os import path #commands to set up folder for graphics
 
 img_dir = path.join(path.dirname(__file__), "img")
+sound_dir = path.join(path.dirname(__file__), "sound") #path to sound folder so we can look up the sounds
 
 width = 600
 height = 600
@@ -21,7 +22,7 @@ deeppink =  (255, 20, 147)
 yellow = (255, 255, 0)
 
 pygame.init()
-pygame.mixer.init() #handles sound effects and music
+pygame.mixer.init() #handles sound effects and music. needed to play sound
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Shoot the Fruit")
 clock = pygame.time.Clock()
@@ -107,10 +108,14 @@ player_img = pygame.image.load(path.join(img_dir, "monkey.png")).convert()
 #mob1_img = pygame.image.load(path.join(img_dir, "banana.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "laserBlue16.png")).convert()
 fruit_images = []
-fruit_ls = ["banana.png", "apple.png"]
+fruit_ls = ["banana.png", "apple.png"] #loading game graphics
+
 
 for i in fruit_ls: #loops through list of files
     fruit_images.append(pygame.image.load(path.join(img_dir, i)).convert()) #loads images
+
+#loading game sounds
+shooting_sound = pygame.mixer.Sound(path.join(sound_dir, "LaserShoot_9"))
 
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
