@@ -64,6 +64,7 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
         bullet = Bullet(self.rect.centerx, self.rect.top) #bottom of bullet at top of the player
         all_sprites.add(bullet) #add to group
         bullets.add(bullet)
+        shooting_sound.play()
 
 class Fruit(pygame.sprite.Sprite): #don't know graphics yet
     def __init__(self):
