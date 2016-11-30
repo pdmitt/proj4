@@ -1,3 +1,7 @@
+#Art from kenney.nl
+#sound from http://www.bfxr.net/
+#copycat by syncopika retrieved <http://opengameart.org/content/copycat> licensed under CC-BY 3.0
+
 import pygame
 import random
 from os import path #commands to set up folder for graphics
@@ -22,12 +26,12 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Shoot the Fruit")
 clock = pygame.time.Clock()
 
-font_name = pygame.font.match_font('arial')
+font_name = pygame.font.match_font('Arial black')
 def draw_text(surf, text, size, x, y):
     font = pygame.font.Font(font_name, size) #created font object
     text_on = font.render(text, True, white) #surface for writing for pixels, True is set so we can use an anti-aliased font which is cleaner (adds grey pixels)
     text_rect = text_on.get_rect() #surface for rect
-    text_rect.midtop = (x, y)
+    text_rect.midtop = (x, y) #positioning score as found from python documentation
     surf.blit(text_on, text_rect) #blit surfac on location of rect
 
 class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
@@ -152,7 +156,7 @@ while running:
     screen.fill(deeppink)
     #screen.blit(background, background_rect) #copy pixels from one screen to another
     all_sprites.draw(screen)
-    draw_text(screen, str(score), 18, width/2, 10) #fruits behind score. denoting where we want it drawn, str score, font size, centered horizontally, pixels down for "y"
+    draw_text(screen, "Score: " + str(score), 24, width/2, 10) #fruits behind score. denoting where we want it drawn, str score, font size, centered horizontally, pixels down for "y"
     pygame.display.flip() #comes after drawing everything
 
 pygame.quit()
