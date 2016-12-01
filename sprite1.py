@@ -1,7 +1,6 @@
-#Art from kenney.nl
-#sound from http://www.bfxr.net/
-#copycat by syncopika retrieved <http://opengameart.org/content/copycat> licensed under CC-BY 3.0
-
+#animations from kenney.nl
+#sound effects from http://www.bfxr.net/
+#copycat by syncopika retrieved from <http://opengameart.org/content/copycat> licensed under CC-BY 3.0
 import pygame
 import random
 from os import path #commands to set up folder for graphics
@@ -24,7 +23,7 @@ yellow = (255, 255, 0)
 pygame.init()
 pygame.mixer.init() #handles sound effects and music. needed to play sound
 screen = pygame.display.set_mode((width, height))
-pygame.display.set_caption("Shoot the Fruit")
+pygame.display.set_caption("Shoot the Fruit!")
 clock = pygame.time.Clock()
 
 font_name = pygame.font.match_font('Arial black')
@@ -46,6 +45,8 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
         self.rect.centerx = width/2
         self.rect.bottom = height-10 #10 pixels from bottom of screen
         self.speedx = 0
+        self.shooting_wait = 250
+        self.last_shot = pygame.time.get_ticks() #adding continuous shooting ability
 
     def update(self):
         self.speedx = 0
@@ -54,6 +55,8 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
             self.speedx = -5 #change to speed up
         if keystate[pygame.K_RIGHT]:
             self.speedx = 5 #change to speed up
+        if keystate[pygame.K_SPACE]:
+            self.shoot()
         self.rect.x += self.speedx
         if self.rect.right > width: #creating a wall so that our right coord. does not get bigger than width
             self.rect.right = width
@@ -61,13 +64,16 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
             self.rect.left = 0 #constraining player movement to screen
 
     def shoot(self):
-        bullet = Bullet(self.rect.centerx, self.rect.top) #bottom of bullet at top of the player
-        all_sprites.add(bullet) #add to group
-        bullets.add(bullet)
-        shooting_sound.play() #adding sound to shoot
-        shooting_sound.set_volume(.7) #adjusting sound to play at 70% full volume
+        current = pygame.time.get_ticks()
+        if now - self.last_shot > self.shooting_wait:
+            self.last_shot = current
+            bullet = Bullet(self.rect.centerx, self.rect.top) #bottom of bullet at top of the player
+            all_sprites.add(bullet) #add to group
+            bullets.add(bullet)
+            shooting_sound.play() #adding sound to shoot
+            shooting_sound.set_volume(.6) #adjusting sound to play at 60% full volume
 
-class Fruit(pygame.sprite.Sprite): #don't know graphics yet
+class Fruit(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         #self.image = pygame.transform.scale(mob1_img, (59, 33))
@@ -78,7 +84,7 @@ class Fruit(pygame.sprite.Sprite): #don't know graphics yet
         #pygame.draw.circle(self.image, green, self.rect.center, self.radius)
         self.rect.x = random.randrange(0, width - self.rect.width) #will alwas appear between left and right
         self.rect.y = random.randrange(-100, -40)
-        self.speedy = random.randrange(1, 8)
+        self.speedy = random.randrange(1, 10) #random assignment of speed
   
 
     def update(self):
@@ -86,7 +92,7 @@ class Fruit(pygame.sprite.Sprite): #don't know graphics yet
         if self.rect.top > height + 10:
             self.rect.x = random.randrange(0, width - self.rect.width) #will alwas appear between left and right
             self.rect.y = random.randrange(-100, -40)
-            self.speedy = random.randrange(1, 8)
+            self.speedy = random.randrange(1, 10)
 
 class Bullet(pygame.sprite.Sprite): #bullet is inheritting from the general class sprite
     def __init__(self, x, y): #x and y so we know player location
@@ -107,7 +113,6 @@ class Bullet(pygame.sprite.Sprite): #bullet is inheritting from the general clas
 #background = pygame.image.load(path.join(img_dir, "background.bmp")).convert()
 #background_rect = background.get_rect()
 player_img = pygame.image.load(path.join(img_dir, "monkey.png")).convert()
-#mob1_img = pygame.image.load(path.join(img_dir, "banana.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "laserBlue16.png")).convert()
 fruit_images = []
 fruit_ls = ["banana.png", "apple.png"] #loading game graphics
@@ -117,20 +122,20 @@ for i in fruit_ls: #loops through list of files
     fruit_images.append(pygame.image.load(path.join(img_dir, i)).convert()) #loads images
 
 #loading game sounds
-shooting_sound = pygame.mixer.Sound(path.join(sound_dir, "Laser_Shoot9.wav")) #smaller sound effect.
+shooting_sound = pygame.mixer.Sound(path.join(sound_dir, "Laser_Shoot9.wav")) #smaller sound effect
 shot_target = pygame.mixer.Sound(path.join(sound_dir, "Powerup10.wav")) #smaller sound effect
 pygame.mixer.music.load(path.join(sound_dir, "copycat(revised).wav")) #adding continuous background music
-pygame.mixer.music.set_volume(.9)
+pygame.mixer.music.set_volume(1) #setting volume to 100% times its original volume
 
 all_sprites = pygame.sprite.Group()
-mobs = pygame.sprite.Group()
+fruits = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
 player = Player1()
 all_sprites.add(player) #add any sprite we create so it gets animated and drawn
-for i in range(8):
-    m = Fruit()
-    all_sprites.add(m)
-    mobs.add(m)
+for i in range(10):
+    f = Fruit()
+    all_sprites.add(f)
+    fruits.add(f)
 
 score = 0
 pygame.mixer.music.play(loops=-1) #adding music to the game and plays infinitely
@@ -143,25 +148,22 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False #game loop ends
-        elif event.type == pygame.KEYDOWN: #bullet will shoot when a key is pressed
-            if event.key == pygame.K_SPACE: #if the key was the space bar
-                player.shoot() #function shoot is defined on line 46
 
     #handle updates
     all_sprites.update()
 
-    #check to see if bullet hits a mob
-    hits = pygame.sprite.groupcollide(mobs,bullets, True, True) #if a bullet hits a mob, both will be deleted
+    #check to see if laser hits a fruit
+    hits = pygame.sprite.groupcollide(fruits, bullets, True, True) #if a bullet hits a fruit, both will be deleted
     for hit in hits:
         score = score + 10 #adding points to score
         shot_target.play() #sound added when laser hits fruit target
         shot_target.set_volume(.7) #adjusting collision sound
-        m = Fruit() #create new mob
-        all_sprites.add(m)
-        mobs.add(m) #always have 8 mobs because they will be created at the rate they are deleted
+        f = Fruit() #create new fruits
+        all_sprites.add(f)
+        fruits.add(f) #always have 10 fruits because they will be created at the rate they are deleted
 
-    #check to see if a mob hit the player
-    hits = pygame.sprite.spritecollide(player, mobs, False,pygame.sprite.collide_circle) #returns list of any mobs which hit player with circle collisions
+    #check to see if a fruit hit the player
+    hits = pygame.sprite.spritecollide(player, fruits, False, pygame.sprite.collide_circle) #returns list of any fruits which hit player with circle collisions
     if hits:
         running = False
 
