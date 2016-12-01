@@ -1,4 +1,5 @@
-#animations from kenney.nl
+#sprites from kenney.nl
+#explosion from thecandyjam.com
 #sound effects from http://www.bfxr.net/
 #copycat by syncopika retrieved from <http://opengameart.org/content/copycat> licensed under CC-BY 3.0
 import pygame
@@ -31,8 +32,19 @@ def draw_text(surf, text, size, x, y):
     font = pygame.font.Font(font_name, size) #created font object
     text_on = font.render(text, True, white) #surface for writing for pixels, True is set so we can use an anti-aliased font which is cleaner (adds grey pixels)
     text_rect = text_on.get_rect() #surface for rect
-    text_rect.midtop = (x, y) #positioning score as found from python documentation
+    text_rect.midtop = (x, y) #positioning score and lives as found from python documentation
     surf.blit(text_on, text_rect) #blit surfac on location of rect
+
+def draw_life_bar(x, y, pct):
+    if pct < 0: #in case bar is less than 0 and bar is incorrectly pictured (negative)
+        pct = 0
+    barwidth = 100
+    barheight = 10
+    fill = (pct / 100) * barwidth
+    outline_rect = pygame.Rect(x, y, barwidth, barheight)
+    fill_rect = pygame.Rect(x, y, fill, barheight)
+    pygame.draw.rect(screen, green, fill_rect) #specify surface
+    pygame.draw.rect(screen, white, outline_rect, 2) #2 pixels wide for outline
 
 class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
     def __init__(self): #will run whenever we create the player object
@@ -47,6 +59,8 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
         self.speedx = 0
         self.shooting_wait = 250
         self.last_shot = pygame.time.get_ticks() #adding continuous shooting ability
+        self.lifebar = 100
+        #self.lives = 7
 
     def update(self):
         self.speedx = 0
@@ -65,7 +79,7 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
 
     def shoot(self):
         current = pygame.time.get_ticks()
-        if now - self.last_shot > self.shooting_wait:
+        if current - self.last_shot > self.shooting_wait: #speeding up shooting delay time
             self.last_shot = current
             bullet = Bullet(self.rect.centerx, self.rect.top) #bottom of bullet at top of the player
             all_sprites.add(bullet) #add to group
@@ -133,11 +147,12 @@ bullets = pygame.sprite.Group()
 player = Player1()
 all_sprites.add(player) #add any sprite we create so it gets animated and drawn
 for i in range(10):
-    f = Fruit()
-    all_sprites.add(f)
+    f = Fruit() #make a mob
+    all_sprites.add(f) #add it to the new groups
     fruits.add(f)
 
 score = 0
+#lives = 7
 pygame.mixer.music.play(loops=-1) #adding music to the game and plays infinitely
 
 #game loop
@@ -161,17 +176,22 @@ while running:
         f = Fruit() #create new fruits
         all_sprites.add(f)
         fruits.add(f) #always have 10 fruits because they will be created at the rate they are deleted
+        #player.lives -= 1
 
-    #check to see if a fruit hit the player
-    hits = pygame.sprite.spritecollide(player, fruits, False, pygame.sprite.collide_circle) #returns list of any fruits which hit player with circle collisions
-    if hits:
-        running = False
+    #check to see if a fruit hits the player
+    hits = pygame.sprite.spritecollide(player, fruits, True, pygame.sprite.collide_circle) #mobs are now removed when they hit the player
+    for hit in hits:
+        player.lifebar -= hit.radius
+        if player.lifebar <= 0:
+            running = False
 
     #draw/render
     screen.fill(deeppink)
     #screen.blit(background, background_rect) #copy pixels from one screen to another
     all_sprites.draw(screen)
     draw_text(screen, "Score: " + str(score), 24, width/2, 10) #fruits behind score. denoting where we want it drawn, str score, font size, centered horizontally, pixels down for "y"
+    #draw_text(screen, "Lives: " + str(lives), 24, width/2, 10)
+    draw_life_bar(5, 5, player.lifebar) #takes x and y, and what % of bar to fill
     pygame.display.flip() #comes after drawing everything
 
 pygame.quit()
