@@ -193,5 +193,5 @@ while running:
     #draw_text(screen, "Lives: " + str(lives), 24, width/2, 10)
     draw_life_bar(5, 5, player.lifebar) #takes x and y, and what % of bar to fill
     pygame.display.flip() #comes after drawing everything
-
+#test
 pygame.quit()
