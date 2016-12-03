@@ -42,7 +42,6 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
         self.image.set_colorkey(white) #removing outline of graphic
         self.rect = self.image.get_rect()
         self.radius = 30 #making collisions more accurate (smaller than half of pixel diameter)
-        #pygame.draw.circle(self.image, green, self.rect.center, self.radius)
         self.rect.centerx = width/2
         self.rect.bottom = height-10 #10 pixels from bottom of screen
         self.speedx = 0
@@ -77,12 +76,10 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
 class Fruit(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        #self.image = pygame.transform.scale(mob1_img, (59, 33))
         self.image = random.choice(fruit_images) #randomly chooses between apples and bananas
         self.image.set_colorkey(white)
         self.rect = self.image.get_rect()
         self.radius = int(self.rect.width*.9/2)
-        #pygame.draw.circle(self.image, green, self.rect.center, self.radius)
         self.rect.x = random.randrange(0, width - self.rect.width) #will alwas appear between left and right
         self.rect.y = random.randrange(-100, -40)
         self.speedy = random.randrange(1, 10) #random assignment of speed
@@ -111,8 +108,6 @@ class Bullet(pygame.sprite.Sprite): #bullet is inheritting from the general clas
             self.kill() #method? #removes any sprite from any group
 
 #loading all game graphics
-#background = pygame.image.load(path.join(img_dir, "background.bmp")).convert()
-#background_rect = background.get_rect()
 player_img = pygame.image.load(path.join(img_dir, "monkey.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "laserBlue16.png")).convert()
 fruit_images = []
@@ -165,7 +160,6 @@ while running:
         f = Fruit() #create new fruits
         all_sprites.add(f)
         fruits.add(f) #always have 10 fruits because they will be created at the rate they are deleted
-        #player.lives -= 1
 
     #check to see if a fruit hits the player
     hits = pygame.sprite.spritecollide(player, fruits, True, pygame.sprite.collide_circle) #mobs are now removed when they hit the player
