@@ -15,7 +15,7 @@ Features:
 - Background music played on inifinite loop while game is running
 
 Extras:
-- Key module used in one version and joystick module in second version
+- Key module used
 - Game over screen when player runs out of lives
 - Random range for speed of mob class
 
