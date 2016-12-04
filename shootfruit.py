@@ -26,6 +26,9 @@ pygame.mixer.init() #handles sound effects and music. needed to play sound
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Shoot the Fruit!")
 clock = pygame.time.Clock()
+pygame.joystick.init()
+joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+
 
 font_name = pygame.font.match_font('Arial black')
 def draw_text(surf, text, size, x, y):
