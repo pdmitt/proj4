@@ -27,8 +27,6 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Shoot the Fruit!")
 clock = pygame.time.Clock()
 pygame.joystick.init()
-joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
-
 
 font_name = pygame.font.match_font('Arial black')
 def draw_text(surf, text, size, x, y):
@@ -36,7 +34,7 @@ def draw_text(surf, text, size, x, y):
     text_on = font.render(text, True, white) #surface for writing for pixels, True is set so we can use an anti-aliased font which is cleaner (adds grey pixels)
     text_rect = text_on.get_rect() #surface for rect
     text_rect.midtop = (x, y) #positioning score and lives as found from python documentation
-    surf.blit(text_on, text_rect) #blit surface on location of rect
+    surf.blit(text_on, text_rect) #blit surfac on location of rect
 
 class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
     def __init__(self): #will run whenever we create the player object
@@ -45,11 +43,13 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
         self.image.set_colorkey(white) #removing outline of graphic
         self.rect = self.image.get_rect()
         self.radius = 30 #making collisions more accurate (smaller than half of pixel diameter)
+        #pygame.draw.circle(self.image, green, self.rect.center, self.radius)
         self.rect.centerx = width/2
         self.rect.bottom = height-10 #10 pixels from bottom of screen
         self.speedx = 0
         self.shooting_wait = 250
         self.last_shot = pygame.time.get_ticks() #adding continuous shooting ability
+        #self.lives = 7
 
     def update(self):
         self.speedx = 0
@@ -60,6 +60,7 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
             self.speedx = 5 #change to speed up
         if keystate[pygame.K_SPACE]:
             self.shoot()
+         
         self.rect.x += self.speedx
         if self.rect.right > width: #creating a wall so that our right coord. does not get bigger than width
             self.rect.right = width
@@ -79,10 +80,12 @@ class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
 class Fruit(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
+        #self.image = pygame.transform.scale(mob1_img, (59, 33))
         self.image = random.choice(fruit_images) #randomly chooses between apples and bananas
         self.image.set_colorkey(white)
         self.rect = self.image.get_rect()
         self.radius = int(self.rect.width*.9/2)
+        #pygame.draw.circle(self.image, green, self.rect.center, self.radius)
         self.rect.x = random.randrange(0, width - self.rect.width) #will alwas appear between left and right
         self.rect.y = random.randrange(-100, -40)
         self.speedy = random.randrange(1, 10) #random assignment of speed
@@ -111,6 +114,8 @@ class Bullet(pygame.sprite.Sprite): #bullet is inheritting from the general clas
             self.kill() #method? #removes any sprite from any group
 
 #loading all game graphics
+#background = pygame.image.load(path.join(img_dir, "background.bmp")).convert()
+#background_rect = background.get_rect()
 player_img = pygame.image.load(path.join(img_dir, "monkey.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "laserBlue16.png")).convert()
 fruit_images = []
@@ -119,6 +124,7 @@ fruit_ls = ["banana.png", "apple.png", "pineapple.png", "orange.png"] #loading g
 
 for i in fruit_ls: #loops through list of files
     fruit_images.append(pygame.image.load(path.join(img_dir, i)).convert()) #loads images
+
 
 #loading game sounds
 shooting_sound = pygame.mixer.Sound(path.join(sound_dir, "Laser_Shoot9.wav")) #smaller sound effect
@@ -134,17 +140,17 @@ bullets = pygame.sprite.Group()
 player = Player1()
 all_sprites.add(player) #add any sprite we create so it gets animated and drawn
 for i in range(10):
-    f = Fruit() #make a mob
-    all_sprites.add(f) #add it to the new groups
+    f = Fruit()
+    all_sprites.add(f)
     fruits.add(f)
 
 score = 0
-lives = 2
-pygame.mixer.music.play(loops=-1) #adding music to the game and plays infinitely
+lives = 7
+pygame.mixer.music.play(-1) #adding music to the game and plays infinitely
 
 #game loop
 running = True
-while running:
+while running and lives:
     clock.tick(FPS) #process input, handle updates, draw on the screen should meet FPS
     #process input
     for event in pygame.event.get():
@@ -163,40 +169,49 @@ while running:
         f = Fruit() #create new fruits
         all_sprites.add(f)
         fruits.add(f) #always have 10 fruits because they will be created at the rate they are deleted
+        #player.lives -= 1
 
     #check to see if a fruit hits the player
-    hits = pygame.sprite.spritecollide(player, fruits, True, pygame.sprite.collide_circle) #mobs are now removed when they hit the player
+    hits = pygame.sprite.spritecollide(player, fruits, True, pygame.sprite.collide_circle) #returns list of any fruits which hit player with circle collisions
     if hits:
         player_death.play()
         player_death.set_volume(.7)
-        lives -= 1
+        lives-=1
         if not lives:
             pygame.mixer.music.stop()
             gameover.play(0) #sound added when laser hits fruit target
             gameover.set_volume(.7) #adjusting collision sound
             running = False
-
+        
     #draw/render
     screen.fill(deeppink)
     #screen.blit(background, background_rect) #copy pixels from one screen to another
     all_sprites.draw(screen)
     draw_text(screen, "Score: " + str(score), 24, width/2, 10) #fruits behind score. denoting where we want it drawn, str score, font size, centered horizontally, pixels down for "y"
-    draw_text(screen, "Lives: " + str(lives), 24, width/8.5, 10) 
+    draw_text(screen, "Lives: " + str(lives), 24, width/8.5, 10)
+    #draw_text(screen, "Lives: " + str(lives), 24, 200, 10)
     pygame.display.flip() #comes after drawing everything
-
 while not running:
+    #pygame.quit()
     all_sprites = pygame.sprite.Group()
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
+    event = pygame.event.poll()
+    if event.type == pygame.QUIT:
+        pygame.quit()
+        break
+    #screen = pygame.display.set_mode((width, height))
     screen.fill(red)
     all_sprites.draw(screen)
     draw_text(screen, "Game Over ", 24, width/2, height/2)
     draw_text(screen, "Score: " + str(score), 24, width/2, height/1.8)
+    #font = pygame.font.Font(None, 50)
+    #text = font.render("Game over! Thanks for cleaning up Texas!", 1, (255,255,255))
+    #textrect = text.get_rect()
+    #textrect.centerx, textrect.centery = width/2,height/2
+    #screen.blit(text, textrect)
+    #screen.fill(deeppink)  
+    #all_sprites.draw(screen)
     pygame.display.flip()
 
+#test
+
 pygame.quit()
-
-
-
-#pygame.quit()
