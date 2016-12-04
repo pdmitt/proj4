@@ -33,7 +33,7 @@ def draw_text(surf, text, size, x, y):
     text_on = font.render(text, True, white) #surface for writing for pixels, True is set so we can use an anti-aliased font which is cleaner (adds grey pixels)
     text_rect = text_on.get_rect() #surface for rect
     text_rect.midtop = (x, y) #positioning score and lives as found from python documentation
-    surf.blit(text_on, text_rect) #blit surfac on location of rect
+    surf.blit(text_on, text_rect) #blit surface on location of rect
 
 class Player1(pygame.sprite.Sprite): #built-in basic Sprite set up
     def __init__(self): #will run whenever we create the player object
@@ -136,7 +136,7 @@ for i in range(10):
     fruits.add(f)
 
 score = 0
-lives = 7
+lives = 2
 pygame.mixer.music.play(loops=-1) #adding music to the game and plays infinitely
 
 #game loop
@@ -186,10 +186,14 @@ while not running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-        screen.fill(red)
-        all_sprites.draw(screen)
-        draw_text(screen, "Game Over: ", 24, width/2, height/2)
-        draw_text(screen, "Score: " + str(score), 24, width/2, height/1.8)
-        pygame.display.flip()
+    screen.fill(red)
+    all_sprites.draw(screen)
+    draw_text(screen, "Game Over ", 24, width/2, height/2)
+    draw_text(screen, "Score: " + str(score), 24, width/2, height/1.8)
+    pygame.display.flip()
 
 pygame.quit()
+
+
+
+#pygame.quit()
